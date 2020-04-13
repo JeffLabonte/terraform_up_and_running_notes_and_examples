@@ -48,13 +48,19 @@ resource "aws_autoscaling_group" "example" {
     vpc_zone_identifier = data.aws_subnet_ids.default.ids
 
     min_size = 2
-    max_size = 10  
+    max_size = 10
 
     tag {
         key                 = "Name"
         value               = "terraform-asg-example"
         propagate_at_launch = true
     }
+}
+
+resource "aws_lb" "example" {
+    name               = "terraform-asg-example"
+    load_balancer_type = "application"
+    subnets            = data.aws_subnet_ids.default.ids
 }
 
 
