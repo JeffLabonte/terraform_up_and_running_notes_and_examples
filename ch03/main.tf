@@ -16,8 +16,8 @@ data "aws_subnet_ids" "default" {
 }
 
 resource "aws_launch_configuration" "example" {
-    image_id                    = "ami-0fc20dd1da406780b"
-    instance_type          = "t2.micro"
+    image_id        = "ami-0fc20dd1da406780b"
+    instance_type   = "t2.micro"
     security_groups = [aws_security_group.instance.id]
     
     user_data = <<-EOF
@@ -69,14 +69,14 @@ resource "aws_lb" "example" {
 resource "aws_lb_listener" "http" {    
     load_balancer_arn = aws_lb.example.arn
     port              = 80
-    protocol          = "http"
+    protocol          = "HTTP"
     
     # By default, return a simple 404 page
     default_action {
         type = "fixed-response"
 
         fixed_response {
-            content-type = "text/plain"
+            content_type = "text/plain"
             message_body = "404; page not found"
             status_code  = 404
         }
@@ -103,7 +103,7 @@ resource "aws_security_group" "alb" {
 
 resource "aws_lb_target_group" "asg" {
     name     = "terraform-asg-example"
-    port     = var.server-port
+    port     = var.server_port
     protocol = "HTTP"
     vpc_id = data.aws_vpc.default.id
 
@@ -119,7 +119,7 @@ resource "aws_lb_target_group" "asg" {
 }
 
 resource "aws_lb_listener_rule" "asg" {
-    listener_arn = aws_lib_listener.http.arn
+    listener_arn = aws_lb_listener.http.arn
     priority     = 100
 
     condition {
@@ -129,11 +129,16 @@ resource "aws_lb_listener_rule" "asg" {
 
     action {
         type             = "forward"
-        target_group_arn = aws_lib_target_group.asg.arn
+        target_group_arn = aws_lb_target_group.asg.arn
     }
 }
 
-output "public_ip" {
-  value = aws_instance.example.public_ip
-  description = "The public IP address of the web server"
+output "alb_dns_name" {
+    value       = aws_lb.example.dns_name
+    description = "The domain name of the load balancer"
 }
+
+#output "public_ip" {
+#  value = aws_instance.example.public_ip
+#  description = "The public IP address of the web server"
+#}
