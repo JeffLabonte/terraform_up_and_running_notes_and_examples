@@ -47,7 +47,7 @@ resource "aws_autoscaling_group" "example" {
     launch_configuration = aws_launch_configuration.example.name
     vpc_zone_identifier  = data.aws_subnet_ids.default.ids
     target_group_arns    = [aws_lb_target_group.asg.arn]
-    health_check_type    = "ELB"
+    health_check_type    = "ELB"  # Default is EC2, ELB is more robust
 
     min_size = 2
     max_size = 10
@@ -66,8 +66,8 @@ resource "aws_lb" "example" {
     security_groups    = [aws_security_group.alb.id]
 }
 
-resource "aws_lib_listener" "http" {    
-    load_balancer_arn = aws_lib.example.arn
+resource "aws_lb_listener" "http" {    
+    load_balancer_arn = aws_lb.example.arn
     port              = 80
     protocol          = "http"
     
@@ -118,6 +118,20 @@ resource "aws_lb_target_group" "asg" {
     }
 }
 
+resource "aws_lb_listener_rule" "asg" {
+    listener_arn = aws_lib_listener.http.arn
+    priority     = 100
+
+    condition {
+        field  = "path-pattern"
+        values = ["*"]
+    }
+
+    action {
+        type             = "forward"
+        target_group_arn = aws_lib_target_group.asg.arn
+    }
+}
 
 output "public_ip" {
   value = aws_instance.example.public_ip
