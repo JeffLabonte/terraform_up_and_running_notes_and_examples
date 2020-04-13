@@ -7,6 +7,14 @@ variable "server_port" {
     type        = number
 }
 
+data "aws_vpc" "default" {
+    default = true
+}
+
+data "aws_subnet_ids" "default" {
+    vpc_id = data.aws_vpc.default.id
+}
+
 resource "aws_launch_configuration" "example" {
     image_id                    = "ami-0fc20dd1da406780b"
     instance_type          = "t2.micro"
