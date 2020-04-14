@@ -1,0 +1,44 @@
+digraph {
+	compound = "true"
+	newrank = "true"
+	subgraph "root" {
+		"[root] aws_autoscaling_group.example" [label = "aws_autoscaling_group.example", shape = "box"]
+		"[root] aws_launch_configuration.example" [label = "aws_launch_configuration.example", shape = "box"]
+		"[root] aws_lb.example" [label = "aws_lb.example", shape = "box"]
+		"[root] aws_lb_listener.http" [label = "aws_lb_listener.http", shape = "box"]
+		"[root] aws_lb_listener_rule.asg" [label = "aws_lb_listener_rule.asg", shape = "box"]
+		"[root] aws_lb_target_group.asg" [label = "aws_lb_target_group.asg", shape = "box"]
+		"[root] aws_security_group.alb" [label = "aws_security_group.alb", shape = "box"]
+		"[root] aws_security_group.instance" [label = "aws_security_group.instance", shape = "box"]
+		"[root] data.aws_subnet_ids.default" [label = "data.aws_subnet_ids.default", shape = "box"]
+		"[root] data.aws_vpc.default" [label = "data.aws_vpc.default", shape = "box"]
+		"[root] output.alb_dns_name" [label = "output.alb_dns_name", shape = "note"]
+		"[root] provider.aws" [label = "provider.aws", shape = "diamond"]
+		"[root] var.server_port" [label = "var.server_port", shape = "note"]
+		"[root] aws_autoscaling_group.example" -> "[root] aws_launch_configuration.example"
+		"[root] aws_autoscaling_group.example" -> "[root] aws_lb_target_group.asg"
+		"[root] aws_autoscaling_group.example" -> "[root] data.aws_subnet_ids.default"
+		"[root] aws_launch_configuration.example" -> "[root] aws_security_group.instance"
+		"[root] aws_lb.example" -> "[root] aws_security_group.alb"
+		"[root] aws_lb.example" -> "[root] data.aws_subnet_ids.default"
+		"[root] aws_lb_listener.http" -> "[root] aws_lb.example"
+		"[root] aws_lb_listener_rule.asg" -> "[root] aws_lb_listener.http"
+		"[root] aws_lb_listener_rule.asg" -> "[root] aws_lb_target_group.asg"
+		"[root] aws_lb_target_group.asg" -> "[root] data.aws_vpc.default"
+		"[root] aws_lb_target_group.asg" -> "[root] var.server_port"
+		"[root] aws_security_group.alb" -> "[root] provider.aws"
+		"[root] aws_security_group.instance" -> "[root] provider.aws"
+		"[root] aws_security_group.instance" -> "[root] var.server_port"
+		"[root] data.aws_subnet_ids.default" -> "[root] data.aws_vpc.default"
+		"[root] data.aws_vpc.default" -> "[root] provider.aws"
+		"[root] meta.count-boundary (EachMode fixup)" -> "[root] aws_autoscaling_group.example"
+		"[root] meta.count-boundary (EachMode fixup)" -> "[root] aws_lb_listener_rule.asg"
+		"[root] meta.count-boundary (EachMode fixup)" -> "[root] output.alb_dns_name"
+		"[root] output.alb_dns_name" -> "[root] aws_lb.example"
+		"[root] provider.aws (close)" -> "[root] aws_autoscaling_group.example"
+		"[root] provider.aws (close)" -> "[root] aws_lb_listener_rule.asg"
+		"[root] root" -> "[root] meta.count-boundary (EachMode fixup)"
+		"[root] root" -> "[root] provider.aws (close)"
+	}
+}
+
