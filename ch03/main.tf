@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "terraform_state" {
-  bucket = "terraform-up-and-running-state"
+  bucket = "terraform-up-and-running-state-jflabonte"
 
   # Preven accidental deletation of this S3 bucket lifecyle
   lifecycle {
@@ -33,6 +33,17 @@ resource "aws_dynamodb_table" "terraform_locks" {
   attribute {
     name = "LockID"
     type = "S"
+  }
+}
+
+terraform {
+  backend "s3" {
+    bucket        = "terraform-up-and-running-state-jflabonte"
+    key           = "global/s3/terraform.tfstate"
+    region        = "us-east-2"
+
+    dynamodb_table = "terraform-up-and-running-locks"
+    encrypt        = true
   }
 }
 
