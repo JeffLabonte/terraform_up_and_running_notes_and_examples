@@ -47,7 +47,12 @@ terraform {
   }
 }
 
-# resource "aws_instance" "chapter_03_instance" {
-#   ami           = "ami-0fc20dd1da406780b"
-#   instance_type = "t2.micro"
-# }
+output "s3_bucket_arn" {
+  value       = aws_s3_bucket.terraform_state.arn
+  description = "The ARN of the S3 Bucket"
+}
+
+output "dynamodb_table_name" {
+  value       = aws_dynamodb_table.terraform_locks.name
+  description = "The name of the DynamoDB Table"
+}
